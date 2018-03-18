@@ -25,6 +25,14 @@ int DELAY = 10;
  */
 int LEVEL[5] = {50, 100, 150, 200, 250};
 
+/*
+ * Select the effect to be displayed here.
+ * 1        - Linear Effect.
+ * 2        - Random Effect.
+ * default  - Random effect.
+ */
+int effect = 2;
+
 void setup() {
   // inputs
   pinMode(SOUND_PORT, INPUT);
@@ -41,12 +49,22 @@ void setup() {
 void loop() {
   // read the sound level.
   sound = analogRead(SOUND_PORT);
-
-  // show the effect.
-  showLinearEffect(sound);
-
-  // added some delay for a better show.
-  delay(DELAY);
+  // set the seed for random function based on sound.
+  randomSeed(sound);
+  switch (effect) {
+    case 1:
+      // show the effect.
+      showLinearEffect(sound);
+      // added some delay for a better show.
+      delay(DELAY);
+      break;
+    case 2:
+      showRandomEffect(sound);
+      break;
+    default:
+      showRandomEffect(sound);
+      break;
+  }
 }
 
 void showLinearEffect(int sound) {
@@ -55,6 +73,15 @@ void showLinearEffect(int sound) {
   setLEDIntensityBasedOnSoundAndLevel(LED[2], sound, LEVEL[2]);
   setLEDIntensityBasedOnSoundAndLevel(LED[3], sound, LEVEL[3]);
   setLEDIntensityBasedOnSoundAndLevel(LED[4], sound, LEVEL[4]);
+}
+
+void showRandomEffect(int sound) {
+  setLEDIntensityBasedOnSoundAndLevel(LED[random(0,5)], sound, LEVEL[0]);
+  setLEDIntensityBasedOnSoundAndLevel(LED[random(0,5)], sound, LEVEL[1]);
+  setLEDIntensityBasedOnSoundAndLevel(LED[random(0,5)], sound, LEVEL[2]);
+  setLEDIntensityBasedOnSoundAndLevel(LED[random(0,5)], sound, LEVEL[3]);
+  setLEDIntensityBasedOnSoundAndLevel(LED[random(0,5)], sound, LEVEL[4]);
+  delay(random(20, sound));
 }
 
 void setLEDIntensityBasedOnSoundAndLevel(int led, int sound, int level) {
